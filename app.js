@@ -1,6 +1,4 @@
 const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLNonNull } = require('graphql');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -31,83 +29,8 @@ const allowedStudentFields = new Set([
   'address'
 ]);
 
-const StudentType = new GraphQLObjectType({
-  name: 'Student',
-  fields: {
-    id: { type: GraphQLInt },
-    firstname: { type: GraphQLString },
-    lastname: { type: GraphQLString },
-    program: { type: GraphQLString },
-    year: { type: GraphQLString },
-    age: { type: GraphQLInt },
-    gender: { type: GraphQLString },
-    email: { type: GraphQLString },
-    phone: { type: GraphQLString },
-    address: { type: GraphQLString }
-  }
-});
-
-const QueryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: {
-    students: {
-      type: new GraphQLList(StudentType),
-      resolve: () => students
-    },
-    student: {
-      type: StudentType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLInt) }
-      },
-      resolve: (_, args) => students.find((student) => student.id === args.id)
-    }
-  }
-});
-
-const MutationType = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    addStudent: {
-      type: StudentType,
-      args: {
-        firstname: { type: new GraphQLNonNull(GraphQLString) },
-        lastname: { type: new GraphQLNonNull(GraphQLString) },
-        program: { type: new GraphQLNonNull(GraphQLString) },
-        year: { type: new GraphQLNonNull(GraphQLString) },
-        age: { type: new GraphQLNonNull(GraphQLInt) },
-        gender: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: GraphQLString },
-        phone: { type: GraphQLString },
-        address: { type: GraphQLString }
-      },
-      resolve: (_, args) => {
-        const newStudent = {
-          id: nextStudentId++,
-          firstname: args.firstname,
-          lastname: args.lastname,
-          program: args.program,
-          year: args.year,
-          age: args.age,
-          gender: args.gender,
-          email: args.email || '',
-          phone: args.phone || '',
-          address: args.address || ''
-        };
-
-        students.push(newStudent);
-        return newStudent;
-      }
-    }
-  }
-});
-
-const schema = new GraphQLSchema({
-  query: QueryType,
-  mutation: MutationType
-});
-
 app.get('/', (req, res) => {
-  res.send('<h1>ACTIVITY 1 - REST API / GRAPHQL</h1>');
+  res.send('<h1>ACTIVITY 1 - REST API</h1>');
 });
 
 app.get('/students', (req, res) => {
@@ -291,11 +214,6 @@ app.delete('/students/:id', (req, res) => {
     data: deletedStudent
   });
 });
-
-app.use('/graphql', graphqlHTTP({
-  schema,
-  graphiql: true
-}));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
