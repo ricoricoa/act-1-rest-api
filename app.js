@@ -41,14 +41,22 @@ app.get('/students', (req, res) => {
       success: true,
       data: students,
       count: students.length,
-      message: 'Empty Data'
+      message: students.length > 0 ? 'Student records retrieved successfully' : 'Empty Data'
     });
   }
 
   const filteredStudents = students.filter((student) => {
     return Object.keys(filters).every((key) => {
       if (!(key in student)) return false;
-      return String(student[key]).toLowerCase() === String(filters[key]).toLowerCase();
+
+      const studentValue = student[key];
+      const filterValue = filters[key];
+
+      if (typeof studentValue === 'string' && typeof filterValue === 'string') {
+        return studentValue.toLowerCase() === filterValue.toLowerCase();
+      }
+
+      return String(studentValue).toLowerCase() === String(filterValue).toLowerCase();
     });
   });
 
@@ -64,7 +72,8 @@ app.get('/students', (req, res) => {
     success: true,
     data: filteredStudents,
     count: filteredStudents.length,
-    filters: filters
+    filters: filters,
+    message: 'Student records retrieved successfully'
   });
 });
 
