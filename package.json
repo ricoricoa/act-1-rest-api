@@ -1,0 +1,14 @@
+{
+  "name": "crud-rest-api-graphql-schema",
+  "version": "1.0.0",
+  "description": "CRUD REST API with GraphQL Schema definition - No database, in-memory storage only",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.10.2"
+  }
+}
